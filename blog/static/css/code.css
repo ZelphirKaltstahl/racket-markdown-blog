@@ -1,0 +1,32 @@
+.post .highlight .code span {
+    font-family: Inconsolata LGC, monospaced;
+}
+
+.post .highlight .code {
+    line-height: 1em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.post .highlight {
+    /* background-color: rgba(50, 50, 50, 0.65);  /\*monokai*\/ */
+    /* border: 2px solid rgba(255, 255, 255, 0.45);  /\*monokai*\/ */
+    /* background-color: rgba(250, 250, 250, 0.45);  /\*tomorrow light*\/ */
+    /* border: 1px dotted rgba(100, 100, 100, 0.45);  /\*tomorrow light*\/ */
+    background-color: rgba(248, 248, 248, 0.45);;  /*github style*/
+    border: 1px dotted rgba(100, 100, 100, 0.45);  /*github style*/
+    border-radius: 3px;
+    margin-bottom: 1em;
+}
+
+.post .highlight .linenodiv pre {
+    /* color: #f8f8f2;  /\*monokai*\/ */
+    color: #95a5a6;  /*tomorrow light*/ /*github style*/
+    font-size: 0.8em;
+}
+
+.post .highlight pre {
+    font-family: Inconsolata LGC, monospaced;
+    /* color: #f8f8f2;  /\*tomorrow light*\/ */
+    margin: 4px;
+}

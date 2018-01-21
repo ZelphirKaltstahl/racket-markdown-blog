@@ -1,0 +1,103 @@
+.post p {
+    max-width: 64em;
+    text-align: justify;
+}
+
+.post h1.post-toc-heading::first-letter,
+.post h1.post-title::first-letter {
+    text-transform: uppercase;
+    font-size: 2em;
+}
+
+.post h1.post-toc-heading {
+    text-decoration: underline;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.5em;
+}
+
+.post h1.post-title {
+    text-decoration: underline;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.9em;
+}
+
+.post {
+    max-width: 64em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post code {
+    /* display: block; */
+    color: #FF6040;
+    padding: 0.2em;
+    font-size: 1.2em;
+    /* background-color: rgba(250, 230, 200, 0.8); */
+    border-radius: 5px;
+}
+
+.post p sup a {
+    text-decoration: none;
+    color: rgba(80, 180, 80, 1.0);
+    font-weight: bold;
+}
+
+.post a {
+    text-decoration: none;
+    color: rgba(100, 100, 180, 1.0);
+}
+
+.post a:visited {
+    text-decoration: none;
+    color: rgba(120, 120, 160, 1.0);
+}
+
+.post h1,
+.post h2,
+.post h3,
+.post h4,
+.post h5,
+.post h6 {
+    font-family: Ubuntu, sans-serif;
+    text-transform: none;
+    font-weight: 400;
+}
+
+.post h1 {
+    font-size: 1.8em;
+}
+.post h2 {
+    font-size: 1.4em;
+}
+.post h3 {
+    font-size: 1.2em;
+}
+.post h4 {
+    font-size: 1.1em;
+}
+.post h5 {
+    font-size: 1.0em;
+}
+.post h6 {
+    font-size: 0.9em;
+}
+
+.post-metadata-non-title {
+    background-color: rgba(250, 250, 250, 0.4);
+    border-radius: 7px;
+    border: 1px solid rgba(100, 100, 100, 0.4);
+}
+
+.post-metadata-list {
+    margin: 0.5em;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.post blockquote {
+    margin-left: 1em;
+    padding: 0.1em 0em 0.1em 0em;
+    border-left: 8px solid rgba(100, 100, 100, 0.5);
+}

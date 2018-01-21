@@ -1,0 +1,148 @@
+################
+# DEBIAN IMAGE #
+################
+FROM debian:jessie
+
+########
+# META #
+########
+MAINTAINER "Zelphir Kaltstahl <zelphirkaltstahl@gmail.com>"
+
+#########################
+# ENVIRONMENT VARIABLES #
+#########################
+ENV SHELL=/bin/bash
+ARG ROOT_USER=root
+ARG DEBIAN_FRONTEND=noninteractive
+ARG NON_PRIVILEGED_USER="your-user-name-here"
+ARG NON_PRIVILEGED_USER_GROUP="your-user-group-name-here"
+ARG NON_PRIVILEGED_USER_PASSWORD="your-password-here"
+ENV HOME="/home/${NON_PRIVILEGED_USER}"
+
+###################
+# SYSTEM PACKAGES #
+###################
+USER $ROOT_USER
+RUN apt-get update
+RUN apt-get --yes upgrade
+# --no-install-recommends\
+RUN apt-get --yes dist-upgrade \
+ && apt-get install -y \
+    wget \
+    sqlite3 \
+    openssl \
+    ca-certificates \
+    sudo \
+    locales \
+    git \
+    bzip2 \
+    unzip
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+##############
+# SET LOCALE #
+##############
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+
+#################
+# ADDING A USER #
+#################
+# For more info please check useradd --help or man useradd.
+RUN groupadd -r $NON_PRIVILEGED_USER_GROUP -g 1000 \
+ && useradd \
+    --uid 1000 \
+    --system \
+    --gid $NON_PRIVILEGED_USER_GROUP \
+    --create-home \
+    --home-dir /home/$NON_PRIVILEGED_USER/ \
+    --shell /bin/bash \
+    --comment "non-privileged user" \
+    $NON_PRIVILEGED_USER \
+ && chmod 755 /home/$NON_PRIVILEGED_USER/ \
+ && echo "$NON_PRIVILEGED_USER:$NON_PRIVILEGED_USER_PASSWORD" | chpasswd
+
+###################
+# INITIAL WORKDIR #
+###################
+WORKDIR $HOME
+
+##########
+# RACKET #
+##########
+USER $NON_PRIVILEGED_USER
+
+ARG RACKET_INSTALLER_CHECKSUM="85cbff83f202293b6cd4c3c58e97919fd75a963177ae815a0e9186886ca4fc54"
+ARG RACKET_INSTALLER_FILENAME="racket-install.sh"
+ARG RACKET_VERSION="6.11"
+ARG RACKET_INSTALLER_URL="https://mirror.racket-lang.org/installers/${RACKET_VERSION}/racket-minimal-${RACKET_VERSION}-x86_64-linux.sh"
+# download
+RUN wget --output-document=$RACKET_INSTALLER_FILENAME -q $RACKET_INSTALLER_URL \
+ && printf "${RACKET_INSTALLER_CHECKSUM} ${RACKET_INSTALLER_FILENAME}" | sha256sum -c - \
+ && printf "no\n3\n" | /bin/bash racket-install.sh
+# cleanup
+RUN rm racket-install.sh
+# setup
+WORKDIR racket/bin
+RUN chmod +x racket
+RUN chmod +x raco
+RUN printf "b"
+ENV PATH=$HOME/racket/bin:$PATH
+RUN printf "%s\n" $PATH
+# RUN which racket
+RUN raco setup
+RUN raco pkg config --set catalogs\
+    "https://download.racket-lang.org/releases/$RACKET_VERSION/catalog/"\
+    "https://pkg-build.racket-lang.org/server/built/catalog/"\
+    "https://pkgs.racket-lang.org"\
+    "https://planet-compats.racket-lang.org"
+
+###################
+# RACKET PACKAGES #
+###################
+USER $NON_PRIVILEGED_USER
+RUN yes | raco pkg install --auto --jobs 4 markdown
+RUN yes | raco pkg install --auto --jobs 4 yaml
+RUN yes | raco pkg install --auto --jobs 4 pollen
+RUN yes | raco pkg install --auto --jobs 4 gregor
+RUN yes | raco pkg install --auto --jobs 4 sha
+
+#####################
+# INSTALL MINICONDA #
+#####################
+USER $NON_PRIVILEGED_USER
+WORKDIR $HOME
+
+ARG MINICONDA_VERSION="4.3.30"
+ARG MINICONDA_SHA256SUM="66c822dfe76636b4cc2ae5604816e0e723aa01620f50087f06410ecf5bfdf38c"
+ENV CONDA_DIR $HOME/anaconda
+ENV PATH $CONDA_DIR/bin:$PATH
+
+RUN mkdir --parents $CONDA_DIR \
+ && wget --quiet https://repo.continuum.io/miniconda/Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh \
+ && echo "${MINICONDA_SHA256SUM} Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh" | sha256sum -c - \
+ && /bin/bash Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh -f -b -p $CONDA_DIR \
+ && rm Miniconda3-$MINICONDA_VERSION-Linux-x86_64.sh \
+ && $CONDA_DIR/bin/conda config --system --add channels conda-forge \
+ && $CONDA_DIR/bin/conda config --system --set auto_update_conda false \
+ && conda clean -tips --yes
+
+###################
+# PYTHON PACKAGES #
+###################
+RUN conda install --yes --quiet pygments
+
+#############
+# COPY BLOG #
+#############
+COPY blog $HOME/blog
+
+############
+# FINALIZE #
+############
+USER $NON_PRIVILEGED_USER
+WORKDIR $HOME/blog
+
+CMD ["/bin/bash", "-c", "racket server.rkt"]

@@ -1,0 +1,42 @@
+body {
+    font-family: sans-serif;
+    background-image: url("/img/bg/tile01.png");
+    background-repeat: repeat;
+}
+
+h1.blog-title {
+    font-size: 3.0em;
+    text-decoration: underline;
+    font-weight: 400;
+    text-align: center;
+    margin: auto;
+}
+
+.post-separator {
+    margin-top: 3em;
+    margin-bottom: 3em;
+
+}
+
+hr.post-separator {
+    border: 0;
+    border-radius: 2px;
+    height: 3px;
+    max-width: 64em;
+    background: #333;
+    background-image: linear-gradient(to right, #ffffff, #333333, #ffffff);
+}
+
+.page-links {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 20em;
+    text-align: center;
+}
+
+.page-links a {
+    text-decoration: none;
+}
+.page-links a:visited {
+    text-decoration: none;
+}
