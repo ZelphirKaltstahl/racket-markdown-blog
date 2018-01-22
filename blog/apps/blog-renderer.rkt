@@ -2,11 +2,38 @@
 
 (require "../html-proc.rkt"
          "../utils/list-operations.rkt"
+         "../utils/contract-predicates.rkt"
          "../parts/header.rkt"
          "post-renderer.rkt"
-         (prefix-in gregor: gregor))
+         (prefix-in gregor: gregor)
+         (prefix-in xml: xml))
 
-(provide create-blog-renderer)
+(provide
+ (contract-out
+  [create-blog-renderer
+   (->*
+    ;; mandatory arguments (none are mandatory)
+    ()
+    ;; optional arguments (keywords are optional)
+    (#:max-posts integer-or-infinity?
+     #:min-date gregor:datetime?
+     #:posts-per-page# integer-or-infinity?
+     #:page-number integer?
+     #:flag-add-separators boolean?
+     #:post-separator xml:xexpr?
+     #:blog-title string?
+     #:blog-language string?)
+    (->
+     ;; a procedure for rendering posts
+     (-> Post? xml:xexpr?)
+     ;; a procedure for rendering page
+     (-> integer? integer-or-infinity? integer? xml:xexpr?)
+     ;; list of posts
+     (listof Post?)
+     ;; active page
+     integer?
+     ;; returns rendered blog
+     xml:xexpr?))]))
 
 (define (create-blog-renderer
          #:max-posts [max-posts +inf.0]

@@ -58,7 +58,7 @@
                                                         posts
                                                         page)))])))
 
-(define (tag-app request tag-name)
+(define (tag-app request tag-name [page 0])
   (let* ([posts (filter (λ (a-post)
                           (member (string-downcase tag-name)
                                   (map string-downcase

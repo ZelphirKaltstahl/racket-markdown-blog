@@ -2,23 +2,25 @@
 
 (require srfi/13
          racket/set
-         "basic-operations.rkt")
+         "basic-operations.rkt"
+         "contract-predicates.rkt")
 
-(provide substring-position
-         list-join
-         take-n-or-less
-         take-from-up-to
-         build-list-conditionally
-         replace-in-list
-         insert-at-pos
-         unique-items-list
-         get-maximum
-         max-length
-         apply-filtered*)
+(provide
+ (contract-out
+  [substring-position (-> string? string? integer?)]
+  [list-join (-> list? any/c list?)]
+  [take-n-or-less (-> list? (and/c integer-or-infinity? positive?) list?)]
+  [take-from-up-to (-> list? integer? (and/c integer-or-infinity? positive?) list?)]
+  [build-list-conditionally (-> list? boolean? (-> any/c) list?)]
+  [replace-in-list (-> list? integer? any/c list?)]
+  [insert-at-pos (-> list? integer? any/c list?)]
+  [unique-items-list (-> list? list?)]
+  [get-maximum (-> list? number?)]
+  [max-length (-> list? (-> any/c number?) number?)]
+  [apply-filtered* (-> (-> any/c any/c) (-> any/c any/c) list? list?)]))
 
 (define (substring-position hay needle)
   (string-contains hay needle))
-
 
 (define (list-join a-list sep)
   (define (iter remaining res)
@@ -50,7 +52,8 @@
 
 (define (build-list-conditionally existing-list condition elem-creating-proc)
   (cond [condition (cond [(empty? existing-list) (list (elem-creating-proc))]
-                         ;; append "dissolves one layers of listiness" (append '(1 2 3) '(4 5 6)) -> '(1 2 3 4 5 6)
+                         ;; append "dissolves one layers of listiness"
+                         ;; (append '(1 2 3) '(4 5 6)) -> '(1 2 3 4 5 6)
                          ;; so we need to wrap in a list here to get valid `xexpr`s
                          [else (append existing-list (list (elem-creating-proc)))])]
         [else existing-list]))

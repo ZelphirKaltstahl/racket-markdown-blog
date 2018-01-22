@@ -43,6 +43,7 @@
 (add-route ("page" (integer-arg)) "get" blog-app)
 (add-route ("post" (integer-arg)) "get" post-app)
 (add-route ("tag" (string-arg)) "get" tag-app)
+(add-route ("tag" (string-arg) "page" (integer-arg)) "get" tag-app)
 
 ;; =================
 ;; RUNNING A SERVLET

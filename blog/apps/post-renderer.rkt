@@ -11,6 +11,7 @@
          gregor)
 
 (provide Post
+         Post?
          Post-content
          Post-metadata
          PostMetadata
