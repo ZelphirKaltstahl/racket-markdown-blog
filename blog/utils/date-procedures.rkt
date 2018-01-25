@@ -1,7 +1,28 @@
 #lang racket
 
 (require racket/date)
-(provide (all-defined-out))
+
+;; which date?
+(provide (contract-out [make-simple-germany-date
+                        (-> (integer-in 1 31)
+                            (integer-in 1 12)
+                            exact-integer?
+                            date?)]
+                       [simple-date-equal?
+                        (-> date? date? boolean?)]
+                       [my-date->string
+                        (-> date? string?)]
+                       [make-simple-date-from-iso-string
+                        (-> string? date?)]
+                       [day-month-year->yearday
+                        (-> (integer-in 1 31)
+                            (integer-in 1 12)
+                            exact-integer?
+                            (integer-in 0 365))]
+                       [make-iso-string-from-date
+                        (-> date? string?)]))
+
+#;(provide (all-defined-out))
 
 ;; === WORKING WITH DATES ===
 (define (simple-date-equal? date1 date2)

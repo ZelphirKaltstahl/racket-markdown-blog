@@ -1,6 +1,10 @@
 #lang racket
 
-(provide assert-with-err-msg)
+(provide (contract-out [assert-with-err-msg (->* (any/c
+                                                  (-> any/c boolean?))
+                                                 (#:error-message string?)
+                                                 void?
+                                                 #;(should we use `any` here?))]))
 
 (define (assert-with-err-msg something
                              predicate?

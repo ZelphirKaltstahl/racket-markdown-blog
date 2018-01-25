@@ -1,6 +1,6 @@
 #lang racket
 
-(provide atom?)
+(provide (contract-out [atom? (-> any/c boolean?)]))
 
 (define (atom? sth)
   (and (not (pair? sth))

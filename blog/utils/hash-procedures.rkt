@@ -2,7 +2,12 @@
 
 (require "list-operations.rkt"
          "string-operations.rkt")
-(provide (all-defined-out))
+(provide (contract-out [my-hash-map
+                        (-> hash? (-> any/c any/c) hash?)]
+                       [hash-pretty-print
+                        (-> hash? (-> any/c any/c boolean?) hash?)]
+                       [nested-hash-get
+                        (->* (hash?) () #:rest (listof any/c) any/c)]))
 
 (define (my-hash-map h f)
   (make-immutable-hash
