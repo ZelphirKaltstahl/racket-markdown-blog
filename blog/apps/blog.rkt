@@ -16,11 +16,17 @@
          post-app
          tag-app)
 
+(struct BlogConfig
+  (posts-per-page
+   ))
+
 ;; =========
 ;; CONSTANTS
 ;; =========
 (define POSTS-DIRECTORY "../data/posts/")
 (define METADATA-FILE-ENDING "meta")
+(define CONFIG-HASH (file->yaml "config.yaml"))
+(define CONFIG (BlogConfig (hash-ref CONFIG-HASH "posts-per-page")))
 
 ;; ===
 ;; APP
@@ -29,7 +35,7 @@
   ;; (display "displaying blog page ") (displayln page)
   (send-success-response
    (let* ([posts (read-post-directory)]
-          [posts-per-page 4]
+          [posts-per-page (BlogConfig-posts-per-page CONFIG)]
           [page (if (> (* page posts-per-page) (length posts))
                     0
                     page)])

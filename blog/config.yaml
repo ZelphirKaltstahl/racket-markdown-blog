@@ -1,0 +1,15 @@
+# general blog settings
+blog-title: "Blog of Complaining"
+time-zone: "Europe/Berlin"
+blog-language: "en"
+
+# rendering properties
+posts-per-page: 4
+max-posts: null
+min-date: "2000-01-01"
+
+# rendering flags
+add-separators: true
+render-metadata: true
+render-toc: true
+render-post-content: true
