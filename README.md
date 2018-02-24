@@ -77,3 +77,5 @@ I got some fancy text as well!
 ### To do
 
 * Read the existing config file and use its values in the code for the optional keyword arguments.
+* add known languages to the configuration file
+* make the port configurable in the coniguration file as well
