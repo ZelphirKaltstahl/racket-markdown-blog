@@ -48,7 +48,8 @@
                                                      [config-datetime
                                                       (hash-ref CONFIG "min-date" #f)])
                                                 (if config-datetime
-                                                    (date->gregor-datetime config-datetime)
+                                                    (date->gregor-datetime config-datetime
+                                                                           (hash-ref CONFIG "time-zone" "Europe/Berlin"))
                                                     default-datetime))
                                    #:posts-per-page# (hash-ref CONFIG "posts-per-page" 10)
                                    #:page-number page

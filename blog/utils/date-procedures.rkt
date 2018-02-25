@@ -23,7 +23,7 @@
                        [make-iso-string-from-date
                         (-> date? string?)]
                        [date->gregor-datetime
-                        (-> date? gregor:datetime?)]))
+                        (-> date? string? gregor:datetime?)]))
 
 #;(provide (all-defined-out))
 
@@ -95,10 +95,13 @@
     #t
     7200))
 
-(define (date->gregor-datetime a-date-struct)
-  (gregor:datetime (date-year a-date-struct)
-                   (date-month a-date-struct)
-                   (date-day a-date-struct)
-                   (date-hour a-date-struct)
-                   (date-minute a-date-struct)
-                   (date-second a-date-struct)))
+(define (date->gregor-datetime a-date-struct time-zone)
+  (gregor:->datetime/utc
+   (gregor:with-timezone
+    (gregor:datetime (date-year a-date-struct)
+                     (date-month a-date-struct)
+                     (date-day a-date-struct)
+                     (date-hour a-date-struct)
+                     (date-minute a-date-struct)
+                     (date-second a-date-struct))
+    time-zone)))

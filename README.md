@@ -69,6 +69,12 @@ An example markdown file `document-your-stuff.md` could look like the following 
 I got some fancy text as well!
 ```
 
+## Configuring the blog application
+
+There is a YAML configuration file in the `blog` directory. Here is an overview of what the contained settings do:
+
+**TODO**
+
 ## Future improvements
 
 * Some kind of navigation would be cool. Maybe something fancy like a word cloud based on existing blog entries or maybe simply some list of links to tags somewhere or clickable dates which filter posts.
