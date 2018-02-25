@@ -73,9 +73,10 @@ I got some fancy text as well!
 
 * Currently a lot of stuff is configured in code using optional or keyword arguments. In the future I plan to enable users to change how their blog is rendered using a configuration file which is read by the blog application.
 * Some kind of navigation would be cool. Maybe something fancy like a word cloud based on existing blog entries or maybe simply some list of links to tags somewhere or clickable dates which filter posts.
+* It would be nice to be able to render markdown tables, instead of having to use HTML tables inside a markdown blog post as a workaround.
 
 ### To do
 
 * Read the existing config file and use its values in the code for the optional keyword arguments.
 * add known languages to the configuration file
-* make the port configurable in the coniguration file as well
+* make the port configurable in the configuration file as well

@@ -19,7 +19,7 @@
      #:min-date gregor:datetime?
      #:posts-per-page# integer-or-infinity?
      #:page-number integer?
-     #:flag-add-separators boolean?
+     #:render-separators boolean?
      #:post-separator xml:xexpr?
      #:blog-title string?
      #:blog-language string?)
@@ -42,7 +42,7 @@
                                                      "Europe/Berlin"))]
          #:posts-per-page# [posts-per-page# +inf.0]
          #:page-number [page-number 0]
-         #:flag-add-separators [flag-add-separators #t]
+         #:render-separators [render-separators #t]
          #:post-separator [post-separator `(hr ((class "post-separator")))]
          #:blog-title [blog-title "Blog of Complaining"]
          #:blog-language [blog-language "en"])
@@ -66,9 +66,9 @@
               ,(render-page-body posts-for-page total-posts#))))
 
     (define (render-page-body posts total-posts#)
-      ;; uses flag-add-separators
+      ;; uses render-separators
       `(body (h1 ((class "blog-title")) ,blog-title)
-             ,@(if flag-add-separators
+             ,@(if render-separators
                    (add-separators-between (render-posts posts))
                    (render-posts posts))
              ,(page-links-renderer total-posts# posts-per-page# active-page#)))
@@ -82,7 +82,7 @@
     (let* ([posts (filter post-date>min-date? posts)]
            [posts (sort posts post-date<?)]
            [posts (take-n-or-less posts max-posts)]
-           [from-index (* posts-per-page# page-number)]
+           [from-index (* posts-per-page# active-page# #;page-number )]
            [to-index (+ from-index posts-per-page#)]
            [posts-for-page (take-from-up-to posts from-index to-index)])
       (render-blog-page posts-for-page (length posts)))))

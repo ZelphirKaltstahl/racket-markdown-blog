@@ -28,15 +28,18 @@
           [else (cons sep
                       (cons (car remaining)
                             (iter (cdr remaining) res)))]))
-  (cdr (iter a-list '())))
+  (let ([res (iter a-list '())])
+    (cond [(empty? res) res]
+          [else (cdr res)])))
 
 (define (take-n-or-less a-list n)
   (define (iter remaining result n)
     (cond [(= n 0) result]
           [(empty? remaining) result]
-          [else (iter (cdr remaining)
-                      (cons (car remaining) result)
-                      (- n 1))]))
+          [else
+           (iter (cdr remaining)
+                 (cons (car remaining) result)
+                 (- n 1))]))
   (reverse (iter a-list '() n)))
 
 (define (take-from-up-to lst start end)

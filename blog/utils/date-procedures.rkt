@@ -1,6 +1,7 @@
 #lang racket
 
-(require racket/date)
+(require racket/date
+         (prefix-in gregor: gregor))
 
 ;; which date?
 (provide (contract-out [make-simple-germany-date
@@ -20,7 +21,9 @@
                             exact-integer?
                             (integer-in 0 365))]
                        [make-iso-string-from-date
-                        (-> date? string?)]))
+                        (-> date? string?)]
+                       [date->gregor-datetime
+                        (-> date? gregor:datetime?)]))
 
 #;(provide (all-defined-out))
 
@@ -91,3 +94,11 @@
     (day-month-year->yearday day month year)
     #t
     7200))
+
+(define (date->gregor-datetime a-date-struct)
+  (gregor:datetime (date-year a-date-struct)
+                   (date-month a-date-struct)
+                   (date-day a-date-struct)
+                   (date-hour a-date-struct)
+                   (date-minute a-date-struct)
+                   (date-second a-date-struct)))

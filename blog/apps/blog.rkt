@@ -3,6 +3,7 @@
 (require yaml
          markdown/parse
          sha
+         (prefix-in gregor: gregor)
          "../response.rkt"
          "blog-renderer.rkt"
          "post-renderer.rkt"
@@ -10,38 +11,52 @@
          "unknown-page.rkt"
          "../utils/list-operations.rkt"
          "../utils/hash-procedures.rkt"
+         "../utils/date-procedures.rkt"
          "../code-highlighting.rkt")
 
 (provide blog-app
          post-app
          tag-app)
 
-(struct BlogConfig
-  (posts-per-page
-   ))
-
 ;; =========
 ;; CONSTANTS
 ;; =========
 (define POSTS-DIRECTORY "../data/posts/")
 (define METADATA-FILE-ENDING "meta")
-(define CONFIG-HASH (file->yaml "config.yaml"))
-(define CONFIG (BlogConfig (hash-ref CONFIG-HASH "posts-per-page")))
+(define CONFIG (file->yaml "config.yaml"))
 
 ;; ===
 ;; APP
 ;; ===
 (define (blog-app request [page 0])
-  ;; (display "displaying blog page ") (displayln page)
   (send-success-response
    (let* ([posts (read-post-directory)]
-          [posts-per-page (BlogConfig-posts-per-page CONFIG)]
-          [page (if (> (* page posts-per-page) (length posts))
+          [page (if (> (* page (hash-ref CONFIG "posts-per-page" 10)) (length posts))
                     0
                     page)])
-     (let* ([blog-renderer (create-blog-renderer #:posts-per-page# posts-per-page
-                                                 #:page-number page)]
-            [post-renderer (create-post-renderer)]
+     (let* ([blog-renderer
+             (create-blog-renderer #:blog-title (hash-ref CONFIG "blog-title" #t)
+                                   #:blog-language (hash-ref CONFIG "blog-language" "en")
+                                   #:max-posts (let ([config-max-posts (hash-ref CONFIG "max-posts" +inf.0)])
+                                                 (if (eqv? config-max-posts 'null)
+                                                     +inf.0
+                                                     config-max-posts))
+                                   #:min-date (let* ([default-datetime
+                                                      (gregor:->datetime/utc
+                                                       (gregor:with-timezone (gregor:datetime 2000)
+                                                                             "Europe/Berlin"))]
+                                                     [config-datetime
+                                                      (hash-ref CONFIG "min-date" #f)])
+                                                (if config-datetime
+                                                    (date->gregor-datetime config-datetime)
+                                                    default-datetime))
+                                   #:posts-per-page# (hash-ref CONFIG "posts-per-page" 10)
+                                   #:page-number page
+                                   #:render-separators (hash-ref CONFIG "render-post-separators" #t))]
+            [post-renderer
+             (create-post-renderer #:render-metadata (hash-ref CONFIG "render-post-metadata" #t)
+                                   #:render-toc (hash-ref CONFIG "render-post-toc" #t)
+                                   #:render-content (hash-ref CONFIG "render-post-content" #t))]
             [page-links-renderer (create-page-links-renderer)])
        (blog-renderer post-renderer
                       page-links-renderer
@@ -54,7 +69,6 @@
                         (read-post-directory))]
          [page 0])
     (cond [(empty? posts)
-           #;(displayln "got no such post")
            (respond-unknown-file request)]
           [else (let* ([blog-renderer (create-blog-renderer)]
                        [post-renderer (create-post-renderer)]
@@ -71,7 +85,6 @@
                                        (PostMetadata-tags (Post-metadata a-post)))))
                         (read-post-directory))]
          [page 0])
-    #;(displayln posts)
     (cond [(empty? posts) (respond-unknown-file request)]
           [else
            (let* ([blog-renderer (create-blog-renderer)]
@@ -158,7 +171,6 @@
       (let ([metadata (cond [(string=? (hash-ref metadata-hashes metadata-path "") hash-of-metadata)
                              (hash-ref read-metadatas metadata-path)]
                             [else
-                             #;(displayln "metadata hashes did not match, reading metadata")
                              (let ([read-metadata (read-metadata-for-post metadata-path)])
                                (hash-set! metadata-hashes metadata-path hash-of-metadata)
                                (hash-set! read-metadatas metadata-path read-metadata)
