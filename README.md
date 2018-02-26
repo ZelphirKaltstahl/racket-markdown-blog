@@ -73,7 +73,18 @@ I got some fancy text as well!
 
 There is a YAML configuration file in the `blog` directory. Here is an overview of what the contained settings do:
 
-**TODO**
+| Setting | Description | Example values |
++---------+-------------+---------------+
+| blog-title | the title which is displayed at the top of the blog | `"My new awesome Blog"` |
+| time-zone | the timezone which the | `"Europe/Berlin"` |
+| blog-language | the `lang` attribute in the DOM of the rendered blog | `"en"` |
+| posts-per-page | maximum number of posts to display on a blog page | `4` |
+| max-posts | maximum number of posts to render | `null` (for no limitation), `10` |
+| min-date | minimum datetime for a post to be rendered | `2000-01-01T00:00:00+01:00` |
+| render-post-separators | whether or not to render separators between posts on one blog page | `true`, `false` |
+| render-post-metadata | whether or not to render metadata of posts | `true`, `false` |
+| render-post-toc | whether or not to render table of contents for posts | `true`, `false` |
+| render-post-content | whether or not to render post contents | `true`, `false` |
 
 ## Future improvements
 
@@ -84,3 +95,4 @@ There is a YAML configuration file in the `blog` directory. Here is an overview 
 
 * add known languages to the configuration file
 * make the port configurable in the configuration file as well
+* decide whether to take timezone from `min-date` at all or only use `time-zone` from config and discard timezone from `min-date`
